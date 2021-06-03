@@ -1,0 +1,8 @@
+.git
+
+*.md
+
+compiled
+
+data/*.json
+data/topics/*.json
