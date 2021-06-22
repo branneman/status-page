@@ -38,7 +38,7 @@ Next, you'll want to customise the UX to match your company/service:
 
 ```sh
 docker build -t status-page .
-docker run -d -t -p 8000:8000 status-page
+docker run -d -t -p 8000:8000 --env TOKEN=secret status-page
 ```
 
 ## How to override status
@@ -75,7 +75,6 @@ that status in a user-friendly way.
 
 - [feature] Load any `*.json` file located in the `data/topics/` directory during `(topics-update-all!)`
 - [feature] Move to last-updated datetime per topic
-- [feature] Load settings via environment (e.g. [dotenv](https://docs.racket-lang.org/dotenv/))
 - [feature] Implement DNS and TLS topic
 - [feature] Implement Backup via S3: `backup-restore` and `backup-now`
 - [tech debt] Consider removing `html-template` dependency, can this be done with xml or sxml?

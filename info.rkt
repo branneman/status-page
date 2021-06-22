@@ -6,6 +6,7 @@
 (define pkg-desc "Communicate service status to your users via a web page.")
 
 (define deps
-  '("html-template"
+  '("dotenv"
+    "html-template"
     "markdown"
     "tzinfo"))

@@ -96,6 +96,7 @@
 
     (cond
       [(not (is-valid-token? (getenv "TOKEN") req))
+       (log! "Invalid token provided.")
        401]
 
       [(bytes=? #"" (request-post-data/raw req))

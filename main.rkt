@@ -3,6 +3,7 @@
 (require
  racket/runtime-path
  "src/util/base-dir.rkt"
+ "src/util/env.rkt"
  "src/util/log.rkt"
  "src/util/on-interval.rkt"
  "src/topics/index.rkt"
@@ -12,6 +13,10 @@
 
 (define-runtime-path runtime-base-dir ".")
 (base-dir runtime-base-dir)
+
+(dotenv-load-if-exists! ".env")
+(require-env-vars
+ '("TOKEN"))
 
 (register-topics)
 
