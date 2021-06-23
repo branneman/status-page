@@ -18,8 +18,6 @@
 (require-env-vars
  '("TOKEN"))
 
-(register-topics)
-
 (backup-restore)
 (topics-update-all!)
 (write-status-page!)

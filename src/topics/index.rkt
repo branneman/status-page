@@ -1,40 +1,25 @@
 #lang racket/base
 
 (provide
- register-topics
  topics-update-all!)
 
 (require
  racket/file
- racket/path
  json
  "../util/base-dir.rkt"
  "../util/log.rkt"
- "../topic.rkt")
+ "../topic.rkt"
 
-(define (topics-dir) (simplify-path (build-path (base-dir) "src/topics/")))
+ (only-in "dns.rkt" [topic-metadata dns-topic-metadata] [topic-status dns-topic-status])
+ (only-in "tls.rkt" [topic-metadata tls-topic-metadata] [topic-status tls-topic-status])
+ (only-in "web-server.rkt" [topic-metadata web-server-topic-metadata] [topic-status web-server-topic-status]))
+
+(define topics
+  (list (list "dns"        dns-topic-metadata        dns-topic-status)
+        (list "tls"        tls-topic-metadata        tls-topic-status)
+        (list "web-server" web-server-topic-metadata web-server-topic-status)))
+
 (define (data-dir) (simplify-path (build-path (base-dir) "data/")))
-
-; (list (list id metadata fn) ...)
-(define topics null)
-
-(define (register-topics)
-  (define (dyn-req path provided)
-    (dynamic-require (build-path (topics-dir) path) provided))
-  (define (path->id path)
-    (let ([p (path->string (file-name-from-path path))])
-      (substring p 0 (- (string-length p) 4))))
-
-  (for ([path (directory-list (topics-dir))]
-        #:when (eq? 'file (file-or-directory-type (build-path (topics-dir) path)))
-        #:when (bytes=? #".rkt" (path-get-extension path))
-        #:unless (string=? "_" (substring (path->string path) 0 1))
-        #:unless (string=? "index.rkt" (path->string path)))
-
-    (let ([id       (path->id path)]
-          [metadata (dyn-req path 'topic-metadata)]
-          [fn       (dyn-req path 'topic-status)])
-      (set! topics (cons (list id metadata fn) topics)))))
 
 (define (topics-update-all!)
   (status-save! (map (λ (t) (apply topic-save! t)) topics))
