@@ -5,6 +5,6 @@
 .env
 compiled
 
-message.html
+data/message.html
 data/*.json
 data/topics/*.json

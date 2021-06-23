@@ -13,7 +13,7 @@ RUN raco exe -o app main.rkt
 RUN raco distribute /app app
 
 
-FROM ubuntu:20.04
+FROM debian:stable-slim
 
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Etc/UTC"
