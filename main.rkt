@@ -15,8 +15,7 @@
 (base-dir runtime-base-dir)
 
 (dotenv-load-if-exists! ".env")
-(require-env-vars
- '("TOKEN"))
+(require-env-vars '("REFRESH_SEC" "TOKEN"))
 
 (backup-restore)
 (topics-update-all!)
@@ -30,7 +29,7 @@
 
   (thread
    (on-interval
-    (* 60 10) ; 10 minutes
+    (string->number (getenv "REFRESH_SEC"))
     (topics-update-all!)
     (write-status-page!)
     (backup-now))))

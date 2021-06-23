@@ -105,30 +105,28 @@
        200]
 
       [else
-       (let ([md (bytes->string/utf-8 (request-post-data/raw req))])
-         (display-to-file (markdown->string/utf-8 md)
-                          (build-path (data-dir) "message.html")
-                          #:exists 'replace))
+       (display-to-file (markdown->html (bytes->string/utf-8 (request-post-data/raw req)))
+                        (build-path (data-dir) "message.html")
+                        #:exists 'replace)
        (log! "Override message updated.")
        200])))
 
 (define (is-valid-token? token req)
-  (let ([auth-header (headers-assq* #"authorization" (request-headers/raw req))])
-    (cond
-      [(not auth-header)
-       #f]
-      [else
-       (let ([val (header-value auth-header)])
-         (cond
-           [(< (bytes-length val) (bytes-length #"Bearer "))
-            #f]
-           [(not (bytes=? #"Bearer " (subbytes val 0 7)))
-            #f]
-           [else
-            (bytes=? (string->bytes/utf-8 token)
-                     (subbytes val 7))]))])))
+  (with-handlers ([exn:fail? (λ (_) #f)])
+    (let* ([auth-header (headers-assq* #"authorization" (request-headers/raw req))]
+           [val (header-value auth-header)])
+      (cond
+        [(not auth-header)
+         #f]
+        [(< (bytes-length val) (bytes-length #"Bearer "))
+         #f]
+        [(not (bytes=? #"Bearer " (subbytes val 0 7)))
+         #f]
+        [else
+         (bytes=? (string->bytes/utf-8 token)
+                  (subbytes val 7))]))))
 
-(define (markdown->string/utf-8 md)
+(define (markdown->html md)
   (let ([xexprs (parse-markdown md)]
         [out (open-output-string)])
     (parameterize ([current-output-port out])
@@ -136,7 +134,6 @@
     (get-output-string out)))
 
 (define (delete-file/if-exists f)
-  (with-handlers
-    ([exn:fail:filesystem? void])
+  (with-handlers ([exn:fail:filesystem? void])
     (delete-file f)
     (void)))

@@ -13,10 +13,16 @@ raco pkg install --deps search-auto
 raco test -qx .
 ```
 
+Come up with a `.env` file during local development:
+
+```sh
+echo REFRESH_SEC=60 >> .env
+echo TOKEN=secret >> .env
+```
+
 Run app:
 
 ```sh
-export TOKEN=secret
 racket main.rkt
 ```
 
@@ -24,8 +30,6 @@ racket main.rkt
 
 You probably want to write custom topics which collect the status of service components you value.
 Topics are located in `src/topics/`, they are updated on interval from `src/topics/index.rkt`.
-Any `*.json` file located in the `data/topics/` directory will be loaded during html generation,
-you could even have another program automatically update files in there.
 
 Next, you'll want to customise the UX to match your company/service:
 
@@ -36,9 +40,11 @@ Next, you'll want to customise the UX to match your company/service:
 
 ## Docker: build & run
 
+Make sure you have sane and safe values inside your `.env` file.
+
 ```sh
 docker build -t status-page .
-docker run -d -t -p 8000:8000 --env TOKEN=secret status-page
+docker run -d -t -p 8000:8000 --env-file .env status-page
 ```
 
 ## How to override status
@@ -73,7 +79,6 @@ that status in a user-friendly way.
 
 ## Todo
 
-- [feature] Load any `*.json` file located in the `data/topics/` directory during `(topics-update-all!)`
 - [feature] Move to last-updated datetime per topic
 - [feature] Implement DNS and TLS topic
 - [feature] Implement Backup via S3: `backup-restore` and `backup-now`
