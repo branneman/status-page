@@ -18,6 +18,7 @@ Come up with a `.env` file during local development:
 ```sh
 echo REFRESH_SEC=60 >> .env
 echo TOKEN=secret >> .env
+echo TOPIC_DNS_NAMES="example.org api.example.org" >> .env
 ```
 
 Run app:
@@ -79,8 +80,8 @@ that status in a user-friendly way.
 
 ## Todo
 
+- [feature] Implement TLS topic
 - [feature] Move to last-updated datetime per topic
-- [feature] Implement DNS and TLS topic
 - [feature] Implement Backup via S3: `backup-restore` and `backup-now`
 - [tech debt] Consider removing `html-template` dependency, can this be done with xml or sxml?
 - [tech debt] Web-server: Refactor from custom dispatcher to idiomatic dispatcher
